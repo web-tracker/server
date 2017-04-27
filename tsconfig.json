@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "target": "es2015",
+        "sourceMap": false,
+        "allowJs": true,
+        "lib": [
+            "es2015"
+        ],
+        // Enhance Strictness
+        "noImplicitAny": false,
+        "suppressImplicitAnyIndexErrors": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "allowUnreachableCode": false,
+        "strictNullChecks": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "newLine": "LF",
+        "noEmit": true
+    }
+}
