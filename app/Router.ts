@@ -12,6 +12,6 @@ router.get('/login', OAuth.loginHandler);
 router.get('/callback', OAuth.callbackHandler);
 
 // API
-router.get('/user', User.userInfoHandler);
+router.get('/api/user', User.userInfoHandler);
 
 export default router;
