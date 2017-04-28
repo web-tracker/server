@@ -1,4 +1,5 @@
 import * as Koa from 'koa';
+import * as cors from 'kcors';
 import * as Session from 'koa-session-redis3';
 import Logger from './Logger';
 import router from './Router';
@@ -14,6 +15,9 @@ app.use(Session({
     ttl: 3600
   }
 }));
+
+// Allow cross origin
+app.use(cors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 app.listen(port);

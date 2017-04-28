@@ -1,6 +1,4 @@
-// Load configuration file
 import * as url from 'url';
-import * as crypto from 'crypto';
 import * as querystring from 'querystring';
 import Logger from '../Logger';
 import * as config from '../../config';
@@ -19,9 +17,14 @@ const OAuthConfig = {
 const authorizeUrl = 'https://github.com/login/oauth/authorize';
 const acessTokenUrl = 'https://github.com/login/oauth/access_token';
 const redirectUrl = url.resolve(OAuthConfig.baseURL, OAuthConfig.callbackURI);
-const state = crypto.randomBytes(8).toString('hex');
+// const state = crypto.randomBytes(8).toString('hex');
 
 export function loginHandler(ctx) {
+  const state = ctx.query.redirect_url;
+  if (!state) {
+    ctx.body = 'Error';
+    return;
+  }
   if (ctx.session.logined) {
     ctx.redirect('/dashboard');
     return;
@@ -39,6 +42,7 @@ export function loginHandler(ctx) {
 
 export async function callbackHandler(ctx) {
   const code = ctx.query.code;
+  const state = ctx.query.state;
   if (!code) {
     ctx.body = 'Error';
   }
@@ -51,10 +55,10 @@ export async function callbackHandler(ctx) {
   const tokenUrl = `${acessTokenUrl}?${queries}`;
   const body = await requestGet({ url: tokenUrl, json: true });
   const accessToken = body.access_token;
-  await UserService.register(accessToken);
+  const user = await UserService.register(accessToken);
   Logger.info('Update user profile in database');
 
   // Mark as logined status
-  ctx.session.logined = true;
-  ctx.redirect('/dashboard');
+  if (user) ctx.session.userId = user.id;
+  ctx.redirect(state);
 }
