@@ -5,7 +5,7 @@ const config: IConnectionConfig = {
   host: '127.0.0.1',
   user: 'root',
   password: '',
-  database: 'WebTracker'
+  database: 'web_tracker'
 };
 
 const connection = mysql.createConnection(config);
