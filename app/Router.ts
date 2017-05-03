@@ -27,8 +27,7 @@ router.get('/api/metric', ctx => ctx.body = metricRoutes);
 
 // Register metric api endpoint
 for (const route of metricRoutes) {
-  console.log(route.path, route.module);
-  router.get('/api/metric/' + route.path, route.module);
+  router.get('/api/metric/' + route.path, AuthorizeMiddleware, route.module);
 }
 
 export default router;
