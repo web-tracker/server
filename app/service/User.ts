@@ -1,5 +1,5 @@
 import Logger from '../Logger';
-import requestGet from '../Utils';
+import { requestGet } from '../Utils';
 import connection from '../Database';
 
 const userProfileUrl = 'https://api.github.com/user';

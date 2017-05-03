@@ -3,7 +3,7 @@ import * as querystring from 'querystring';
 import Logger from '../Logger';
 import * as config from '../../config';
 import * as UserService from '../service/User';
-import requestGet from '../Utils';
+import { requestGet } from '../Utils';
 
 const OAuthConfig = {
   client: config.github.client,
