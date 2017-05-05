@@ -104,7 +104,10 @@ export function getHistoryFirstPaintTime(daysAgo: number) {
 export function getMetricOverview(daysAgo: number) {
   return new Promise<number>((resolve, reject) => {
     connection.query(
-      'SELECT AVG(first_paint_time) as first_paint_time, AVG(first_interaction_time) as first_interaction_time, AVG(total_loading_time) as total_loading_time, DATE_FORMAT(time, "%m-%d") as name FROM `metric` WHERE DATE_SUB(CURDATE(), INTERVAL ? DAY)<=time GROUP BY CAST(time AS DATE);',
+      `SELECT first_paint_time, first_interaction_time, total_loading_time, downloading_time, first_byte_time, scripts_time, DATE_FORMAT(time, "%m-%d") as time
+        FROM metric
+        WHERE DATE_SUB(CURDATE(), INTERVAL ? DAY)<=time
+        GROUP BY CAST(time AS DATE);`,
       daysAgo,
       (error, result) => {
         if (error) {

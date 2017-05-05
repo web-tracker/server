@@ -37,5 +37,5 @@ export function resolveRoutes(controllerPath: string): Array<Route> {
 }
 
 export function normalizePercentage(num: number) {
-  return (Math.abs(num) * 100).toFixed(2);
+  return ((num) * 100).toFixed(2);
 }
