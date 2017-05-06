@@ -1,5 +1,6 @@
 import connection from '../Database';
 
+// TODO: Limits to specific user, the same the other services below.
 export function getCurrentAverageTotalLoadingTime() {
   return new Promise<number>((resolve, reject) => {
     connection.query(

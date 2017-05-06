@@ -21,13 +21,21 @@ router.get('/api/user/logout', AuthorizeMiddleware, User.userLogoutHandler);
 // API for Metric
 // Todo: add authorize middleware
 const metricRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Metric'));
+const errorRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Error'));
 
 // Register metric api list
 router.get('/api/metric', ctx => ctx.body = metricRoutes);
+// Register error api list
+router.get('/api/error', ctx => ctx.body = errorRoutes);
 
 // Register metric api endpoint
 for (const route of metricRoutes) {
   router.get('/api/metric/' + route.path, AuthorizeMiddleware, route.module);
+}
+
+// Register error api endpoint
+for (const route of errorRoutes) {
+  router.get('/api/error/' + route.path, AuthorizeMiddleware, route.module);
 }
 
 export default router;
