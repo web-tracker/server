@@ -117,6 +117,8 @@ export async function deviceCategory(ctx) {
 
 export async function queryMetric(ctx) {
   const query = ctx.query;
+  // Get site token which belongs to this user;
+  const id = ctx.session.userId;
   if (!query) {
     ctx.body = {
       status: 'No parameter is provided'
@@ -158,7 +160,7 @@ export async function queryMetric(ctx) {
   // `mysql` plugin doesn't support this kind of functionality
   if (hasCondition) {
     for (const key of conditionKeys) {
-      whereClause += `${key}='${conditions[key]}' and `;
+      whereClause += `${key}=${mysql.escape(conditions[key])} and `;
     }
   }
 
@@ -174,10 +176,12 @@ export async function queryMetric(ctx) {
 
   const sql = `select AVG(??) as ??, ??, ${dateFormat} as time
     from metric
-    where ${whereClause}time >= ? and time <= ?
+    where ${whereClause}time >= ? and time <= ? and site_token=(
+        select token from site where belongs_to=?
+     )
     group by ${dateFormat + ','} ??;`;
 
-  const queryData = [key, key, dimension, dateRange[0], dateRange[1], dimension];
+  const queryData = [key, key, dimension, dateRange[0], dateRange[1], id, dimension];
   const psql = mysql.format(sql, queryData);
 
   Logger.info(psql);

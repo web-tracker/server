@@ -12,3 +12,4 @@ const Logger = new winston.Logger({
 // Todo: To solve compile error in global
 (global as any).Logger = Logger as winston.LoggerInstance;
 export default Logger;
+export { Logger };

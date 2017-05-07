@@ -48,6 +48,10 @@
     "@types/koa-compose" "*"
     "@types/node" "*"
 
+"@types/lodash@^4.14.64":
+  version "4.14.64"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.64.tgz#979cf3a3d4a368670840bf9b3e448dc33ffe84ee"
+
 "@types/mysql@^0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@types/mysql/-/mysql-0.0.32.tgz#34e963db23c31d3710c92e2a3502dd3cbff95efc"
@@ -520,6 +524,10 @@ koa@^2.2.0:
     statuses "^1.2.0"
     type-is "^1.5.5"
     vary "^1.0.0"
+
+lodash@^4.17.4:
+  version "4.17.4"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
 make-error@^1.1.1:
   version "1.2.3"
