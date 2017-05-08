@@ -112,7 +112,7 @@ export async function queryErrors(ctx) {
       where time >= ? and time <= ? and site_token=(
         select token from site where belongs_to=?
       ) ${whereClause.length > 0 ? ' and ' + whereClause.join(' and ') : ''}
-      group by message
+      group by message, script_url
       order by count desc`;
     const psql = mysql.format(sql, [dateRange[0], dateRange[1], id]);
     Logger.info(psql);

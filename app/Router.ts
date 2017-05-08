@@ -16,7 +16,9 @@ router.get('/callback', OAuth.callbackHandler);
 
 // API
 router.get('/api/user', AuthorizeMiddleware, User.userInfoHandler);
-router.get('/api/user/logout', AuthorizeMiddleware, User.userLogoutHandler);
+
+// Logout doesn't need authorize
+router.get('/api/user/logout', User.userLogoutHandler);
 
 // API for Metric
 // Todo: add authorize middleware
