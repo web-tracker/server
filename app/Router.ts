@@ -4,6 +4,7 @@ import * as OAuth from './controller/OAuth';
 import * as User from './controller/User';
 import AuthorizeMiddleware from './AuthorizeMiddleware';
 import { resolveRoutes } from './Utils';
+import { decompressSourceCode } from './controller/Error';
 
 const router = new Router();
 router.get('/', (ctx) => {
@@ -39,5 +40,6 @@ for (const route of metricRoutes) {
 for (const route of errorRoutes) {
   router.get('/api/error/' + route.path, AuthorizeMiddleware, route.module);
 }
+router.post('/api/error/decompressSourceCode', decompressSourceCode);
 
 export default router;

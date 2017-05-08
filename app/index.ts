@@ -1,5 +1,6 @@
 import * as Koa from 'koa';
 import * as cors from 'kcors';
+import * as bodyParser from 'koa-bodyparser';
 import * as Session from 'koa-session-redis3';
 import Logger from './Logger';
 import router from './Router';
@@ -18,6 +19,7 @@ app.use(Session({
 
 // Allow cross origin
 app.use(cors());
+app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 app.listen(port);

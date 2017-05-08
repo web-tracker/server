@@ -4,6 +4,7 @@ import * as mysql from 'mysql';
 import * as QueryService from '../service/Query';
 import { Logger } from '../Logger';
 import * as _ from 'lodash';
+import { codeResolver } from '../service/CodeResolver';
 
 export async function queryErrorLogs(ctx: Koa.Context) {
   if (!ctx.query) {
@@ -126,4 +127,50 @@ export async function queryErrors(ctx) {
     ctx.status = 500;
     ctx.body = { status: 'Server Error' };
   }
+}
+
+export async function fetchSourceCode(ctx) {
+  if (!ctx.query || !ctx.query.url) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide source code url'
+    };
+    return;
+  }
+  const codeURL: string = ctx.query.url;
+  try {
+    const sourceCode = await codeResolver.fetchSourceCode(codeURL);
+    if (!sourceCode) {
+      throw new Error('Empty result');
+    }
+    ctx.body = { sourceCode };
+  } catch (error) {
+    ctx.status = 404;
+    ctx.body = {
+      status: error
+    };
+  }
+}
+
+export async function decompressSourceCode(ctx) {
+  if (ctx.request.method !== 'POST') {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Please send data via POST'
+    };
+    return;
+  }
+
+  // Here we will get request body in the form of ``
+  const { sourcemap, line, column } = ctx.request.body;
+  if (!sourcemap || !line || !column) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Please provide sourcemap, line and column'
+    };
+    return;
+  }
+
+  const sourceCode = codeResolver.decompressCode(sourcemap, line, column);
+  ctx.body = sourceCode;
 }
