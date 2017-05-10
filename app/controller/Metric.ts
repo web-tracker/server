@@ -7,6 +7,7 @@ import Logger from '../Logger';
 
 /**
  * Compute the overhead of average loading time.
+ * TODO: Should judge which user and which website
  */
 export async function averageLoadingTimeOverhead(ctx) {
   let todayLoadingTime = await MetricService.getCurrentAverageTotalLoadingTime();
@@ -64,54 +65,94 @@ export async function historyMetricOverview$days(ctx) {
 
 export async function ISPCategory(ctx) {
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select network_isp from metric where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
       ) group by network_isp;`,
-    id
+    [id, hostname]
   );
 }
 
 export async function pathCategory(ctx) {
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select page_url from metric where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
       ) group by page_url`,
-    id
+    [id, hostname]
   );
 }
 
 export async function cityCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select city from metric where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by city`,
-    id
+    [id, hostname]
   );
 }
 
 export async function browserCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select browser from metric where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by browser`,
-    id
+    [id, hostname]
   );
 }
 
 export async function deviceCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select device from metric where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by device`,
-    id
+    [id, hostname]
   );
 }
 
@@ -119,9 +160,18 @@ export async function queryMetric(ctx) {
   const query = ctx.query;
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
   if (!query) {
     ctx.body = {
       status: 'No parameter is provided'
+    };
+    return;
+  }
+
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
     };
     return;
   }
@@ -177,11 +227,11 @@ export async function queryMetric(ctx) {
   const sql = `select AVG(??) as ??, ??, ${dateFormat} as time
     from metric
     where ${whereClause}time >= ? and time <= ? and site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      )
     group by ${dateFormat + ','} ??;`;
 
-  const queryData = [key, key, dimension, dateRange[0], dateRange[1], id, dimension];
+  const queryData = [key, key, dimension, dateRange[0], dateRange[1], id, hostname, dimension];
   const psql = mysql.format(sql, queryData);
 
   Logger.info(psql);

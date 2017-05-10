@@ -5,6 +5,7 @@ import * as User from './controller/User';
 import AuthorizeMiddleware from './AuthorizeMiddleware';
 import { resolveRoutes } from './Utils';
 import { decompressSourceCode } from './controller/Error';
+import { updateWebsite, removeWebsite } from './controller/Website';
 
 const router = new Router();
 router.get('/', (ctx) => {
@@ -41,13 +42,11 @@ for (const route of metricRoutes) {
 
 // Register error api endpoint
 for (const route of errorRoutes) {
-  router.get('/api/error/' + route.path, AuthorizeMiddleware, route.module);
+  router.all('/api/error/' + route.path, AuthorizeMiddleware, route.module);
 }
-router.post('/api/error/decompressSourceCode', decompressSourceCode);
 
 // Register website api endpoint
 for (const route of websiteRoutes) {
-  router.get('/api/website/' + route.path, AuthorizeMiddleware, route.module);
+  router.all('/api/website/' + route.path, AuthorizeMiddleware, route.module);
 }
-
 export default router;

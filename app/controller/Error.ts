@@ -15,63 +15,112 @@ export async function queryErrorLogs(ctx: Koa.Context) {
 
 export async function ISPCategory(ctx) {
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select network_isp from error where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
       ) group by network_isp;`,
-    id
+    [id, hostname]
   );
 }
 
 export async function pathCategory(ctx) {
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select script_url from error where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
       ) group by script_url`,
-    id
+    [id, hostname]
   );
 }
 
 export async function cityCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select city from error where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by city`,
-    id
+    [id, hostname]
   );
 }
 
 export async function browserCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select browser from error where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by browser`,
-    id
+    [id, hostname]
   );
 }
 
 export async function deviceCategory(ctx) {
   // Get site token which belongs to this user;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+    return;
+  }
   ctx.body = await QueryService.SQLQuery(
     `select device from error where site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
      ) group by device`,
-    id
+    [id, hostname]
   );
 }
 
 export async function queryErrors(ctx) {
   const query = ctx.query;
   const id = ctx.session.userId;
+  const hostname = ctx.query.hostname;
   if (!query) {
     ctx.body = {
       status: 'No parameter is provided'
+    };
+    return;
+  }
+
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
     };
     return;
   }
@@ -111,15 +160,15 @@ export async function queryErrors(ctx) {
       message, count(*) as count, script_url, \`column\`, line, stack, time
       from error
       where time >= ? and time <= ? and site_token=(
-        select token from site where belongs_to=?
+        select token from site where belongs_to=? and hostname=?
       ) ${whereClause.length > 0 ? ' and ' + whereClause.join(' and ') : ''}
       group by message, script_url
       order by count desc`;
-    const psql = mysql.format(sql, [dateRange[0], dateRange[1], id]);
+    const psql = mysql.format(sql, [dateRange[0], dateRange[1], id, hostname]);
     Logger.info(psql);
 
     const queryResults = await QueryService.SQLQuery(sql, [
-      dateRange[0], dateRange[1], id
+      dateRange[0], dateRange[1], id, hostname
     ]);
     ctx.body = queryResults;
   } catch (error) {
