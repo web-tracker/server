@@ -1,3 +1,4 @@
+import * as uuid from 'node-uuid';
 import * as QueryService from '../service/Query';
 import { Logger } from '../Logger';
 
@@ -35,7 +36,7 @@ export async function updateWebsite(ctx) {
   const website = ctx.request.body;
   Logger.info(website);
   const {
-    name, hostname, token, metric_alert_enabled,
+    id, name, hostname, token, metric_alert_enabled,
     metric_alert_line, error_alert_enabled, error_alert_line
   } = website;
 
@@ -50,10 +51,11 @@ export async function updateWebsite(ctx) {
   }
 
   try {
-    await QueryService.SQLQuery('update site set ?', {
+    await QueryService.SQLQuery('update site set ? where id=?', [{
       name, hostname, token, metric_alert_enabled,
       metric_alert_line, error_alert_enabled, error_alert_line
-    });
+    }, id]);
+
     ctx.body = {
       status: 'Website was succesfully updated'
     };
@@ -91,6 +93,10 @@ export async function createWebsite(ctx) {
   const website = ctx.request.body;
   const userId = ctx.session.userId;
   Logger.info(website);
+
+  // Generate token if not exists
+  website.token = website.token || uuid.v4();
+
   const {
     name, hostname, token, metric_alert_enabled,
     metric_alert_line, error_alert_enabled, error_alert_line

@@ -47,7 +47,7 @@ export async function register(accessToken: string) {
           return reject();
         }
         resolve(profile);
-    });
+      });
   });
 }
 
@@ -64,6 +64,23 @@ export function query(userId: string) {
           return reject();
         }
         resolve(results[0]);
-    });
+      });
+  });
+}
+
+export async function getUerEmailById(userId: number) {
+  return new Promise<any>((resolve, reject) => {
+    connection.query(
+      'SELECT * from `user` WHERE id=?',
+      userId,
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        if (results.length <= 0) {
+          return reject();
+        }
+        resolve(results[0]['email']);
+      });
   });
 }

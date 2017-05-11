@@ -17,7 +17,7 @@ export async function averageLoadingTimeOverhead(ctx) {
   }
   ctx.body = {
     averageLoadingTimeOverhead: normalizePercentage(
-      ((todayLoadingTime - pastLoadingTime) / pastLoadingTime) * 10
+      (todayLoadingTime - pastLoadingTime) / pastLoadingTime
     )
   };
 }
@@ -32,15 +32,23 @@ export async function historyTotalLoadingTime$days(ctx) {
 }
 
 export async function averageFirstPaintTimeOverhead(ctx) {
-  let todayPaintTime = await MetricService.getCurrentAverageFirstPaintTime();
-  const pastPaintTime = await MetricService.getHistoryAverageFirstPaintTime();
+  const userId = ctx.session.userId;
+  const hostname = ctx.query.hostname;
+  if (!hostname) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'Should provide hostname'
+    };
+  }
+  let todayPaintTime = await MetricService.getCurrentAverageFirstPaintTime(userId, hostname);
+  const pastPaintTime = await MetricService.getHistoryAverageFirstPaintTime(userId, hostname);
   // No data for now
   if (isNaN(todayPaintTime)) {
     todayPaintTime = pastPaintTime;
   }
   ctx.body = {
     averageFirstPaintTimeOverhead: normalizePercentage(
-      ((todayPaintTime - pastPaintTime) / pastPaintTime) * 10
+      (todayPaintTime - pastPaintTime) / pastPaintTime
     )
   };
 }

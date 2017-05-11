@@ -10,3 +10,4 @@ const config: IConnectionConfig = {
 
 const connection = mysql.createConnection(config);
 export default connection;
+export { connection }

@@ -27,6 +27,7 @@ router.get('/api/user/logout', User.userLogoutHandler);
 const metricRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Metric'));
 const errorRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Error'));
 const websiteRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Website'));
+const alertRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Website'));
 
 // Register metric api list
 router.get('/api/metric', ctx => ctx.body = metricRoutes);
@@ -49,4 +50,10 @@ for (const route of errorRoutes) {
 for (const route of websiteRoutes) {
   router.all('/api/website/' + route.path, AuthorizeMiddleware, route.module);
 }
+
+// Register alert api endpoint
+for (const route of alertRoutes) {
+  router.all('/api/alert/' + route.path, AuthorizeMiddleware, route.module);
+}
+
 export default router;

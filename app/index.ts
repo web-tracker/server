@@ -1,9 +1,25 @@
+import * as path from 'path';
+import * as childProcess from 'child_process';
 import * as Koa from 'koa';
 import * as cors from 'kcors';
 import * as bodyParser from 'koa-bodyparser';
 import * as Session from 'koa-session-redis3';
 import Logger from './Logger';
 import router from './Router';
+
+// Spawn several workers
+// const perfWorkerPath = path.join(__dirname, '../worker.js');
+// const worker = childProcess.fork(perfWorkerPath);
+
+// worker.on('exit', code => {
+//   Logger.info('Worker process exit', code);
+// });
+
+// process.on('exit', () => {
+//   worker.kill();
+// });
+
+// Logger.info('Worker pid:', worker.pid);
 
 const port = 8080;
 const app = new Koa();
