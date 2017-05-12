@@ -140,14 +140,10 @@ async function sendAlertEmail(alert: Alert) {
   }
 
   try {
-    await mailer.send(
-      receiverEmail,
-      subject,
-      content
-    );
+    await mailer.send(receiverEmail, subject, content);
   } catch (error) {
     Logger.error('Mailer Error', error);
     // Try again
-    await sendAlertEmail(alert);
+    await mailer.send(receiverEmail, subject, content);
   }
 }
