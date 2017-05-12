@@ -6,12 +6,14 @@ import AuthorizeMiddleware from './AuthorizeMiddleware';
 import { resolveRoutes } from './Utils';
 import { decompressSourceCode } from './controller/Error';
 import { updateWebsite, removeWebsite } from './controller/Website';
+import { SDKHandler } from './controller/DevKit';
 
 const router = new Router();
-router.get('/', (ctx) => {
-  ctx.body = 'hi';
-});
 
+// Register SDK for customers
+router.get('/sdk.js', SDKHandler);
+
+// Dashboard API endpoint
 // OAuth login
 router.get('/login', OAuth.loginHandler);
 router.get('/callback', OAuth.callbackHandler);
@@ -27,7 +29,7 @@ router.get('/api/user/logout', User.userLogoutHandler);
 const metricRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Metric'));
 const errorRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Error'));
 const websiteRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Website'));
-const alertRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Website'));
+const alertRoutes = resolveRoutes(path.resolve(__dirname + '/controller/Alert'));
 
 // Register metric api list
 router.get('/api/metric', ctx => ctx.body = metricRoutes);
@@ -35,6 +37,8 @@ router.get('/api/metric', ctx => ctx.body = metricRoutes);
 router.get('/api/error', ctx => ctx.body = errorRoutes);
 // Register website api list
 router.get('/api/website', ctx => ctx.body = websiteRoutes);
+// Register alert api list
+router.get('/api/alert', ctx => ctx.body = alertRoutes);
 
 // Register metric api endpoint
 for (const route of metricRoutes) {

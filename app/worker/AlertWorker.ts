@@ -98,7 +98,6 @@ async function checkMetricOverhead(site: Site, type: string) {
   if (overhead > 100) {
     const count = await countAbnormalMetricOfToday(type, pastTime, site.belongs_to, site.hostname);
     if (count > site.metric_alert_line) {
-      Logger.error('Alerting', type);
       return new Alert(site, 'metric', type, count, overhead.toFixed(2), null);
     }
   }
@@ -110,7 +109,6 @@ async function checkMetricOverhead(site: Site, type: string) {
  */
 async function checkErrorOverhead(site: Site) {
   const results = await getAbnormalErrorOfToday(site.belongs_to, site.hostname, site.error_alert_line);
-  Logger.error(results.toString());
   return results.map(r => new Alert(site, 'error', r.message, r.count, null, r.stack));
 }
 

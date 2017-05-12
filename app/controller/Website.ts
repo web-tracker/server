@@ -34,6 +34,7 @@ export async function updateWebsite(ctx) {
     ctx.status = 400;
   }
   const website = ctx.request.body;
+  website.token = website.token || uuid.v4();
   Logger.info(website);
   const {
     id, name, hostname, token, metric_alert_enabled,

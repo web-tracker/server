@@ -6,6 +6,7 @@ export async function getAbnormalErrorOfToday(userId: string | number, hostname:
       `select * from (
           select count(*) as count, message, stack from error
           where site_token = (select token from site where belongs_to=? and hostname=?)
+          and TO_DAYS(time) = TO_DAYS(now())
           group by script_url, message
        ) as e where e.count > ?`,
       [userId, hostname, limit],

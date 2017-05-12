@@ -33,3 +33,10 @@ export async function saveAlertRecord(alert: Alert) {
   await SQLQuery('update alert_logs set count=?, overhead=? where id=?', [alert.count, alert.overhead, existRecord[0].id]);
   return false;
 }
+
+export async function resolveAlertById(userId: string, hostname: string, id: string | number) {
+  await SQLQuery(
+    `update alert_logs set resolved=1, resolved_time=now() where site_id=(select id from site where belongs_to=? and hostname=?) and id=?;`,
+    [userId, hostname, id]
+  );
+}
