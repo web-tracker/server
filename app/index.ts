@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as childProcess from 'child_process';
 import * as Koa from 'koa';
 import * as cors from 'kcors';
+import * as serve from 'koa-static';
 import * as bodyParser from 'koa-bodyparser';
 import * as Session from 'koa-session-redis3';
 import Logger from './Logger';
@@ -32,6 +33,9 @@ app.use(Session({
     ttl: 3600
   }
 }));
+
+// Serve static assets
+app.use(serve(path.join(__dirname, '../../dashboard/build')));
 
 // Allow cross origin
 app.use(cors());

@@ -24,10 +24,12 @@ export async function SDKHandler(ctx) {
   const url = ctx.headers.referer;
   if (!url) {
     ctx.status = 404;
+    return;
   }
   const hostname = URL.parse(url).hostname;
   if (!hostname) {
     ctx.status = 404;
+    return;
   }
   try {
     const result = await SQLQuery(`select token from site where hostname=?`, hostname);
